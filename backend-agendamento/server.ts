@@ -15,15 +15,14 @@ app.use(express.json());
 
 app.get('/slots', async (req, res) => {
     try{
-        const availableSlots = await prisma.slot.findMany({
-            where: { isBooked: false },
-            include: { artist: true },
-            orderBy: { startTime: 'asc' }
+        const allSlots = await prisma.slot.findMany({
+            include: {artist: true},
+            orderBy: {startTime: 'asc'}
         });
-        res.json(availableSlots);
+        res.json(allSlots);
     }catch(error){
-        console.error('Erro ao buscar slots:', error);
-        res.status(500).json({ error: 'Erro ao buscar slots' });
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao buscar horários' });
     }
 });
 
@@ -71,6 +70,29 @@ app.post('/reserve', async (req, res) => {
     }
   }
 });
+
+app.delete('/cancel/:slotId', async (req, res) => {
+    const { slotId } = req.params;
+
+    try {
+        await prisma.$transaction(async (tx) => {
+            await tx.appointment.delete({
+                where: {slotId: slotId}
+            });
+
+            await tx.slot.update({
+                where: {id: slotId},
+                data: {isBooked: false}
+            });
+        });
+
+        res.json({message: 'Agendamento cancelado com sucesso'})
+    } catch(error){
+        console.error(error);
+        res.status(500).json({error: 'Erro ao cancelar agendamento'})
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
