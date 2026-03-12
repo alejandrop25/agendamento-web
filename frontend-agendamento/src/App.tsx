@@ -75,7 +75,7 @@ function App() {
 
   const handleCancel = async (slotId: string) => {
     try {
-      const response = await fetch(`http://localhost:3333/cancel/${slotId}`, {
+      const response = await fetch(`http://localhost:3000/cancel/${slotId}`, {
         method: 'DELETE',
       });
 
@@ -125,7 +125,7 @@ function App() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {slots.map((slot) => (
-                  <div key={slot.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div key={slot.id} className="card-slot border border-black-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                     <p className="font-bold text-lg text-gray-800">{slot.artist.name}</p>
                     <p className="text-sm text-gray-500 mb-2">{slot.artist.specialty}</p>
                     <p className="text-gray-700">
@@ -182,41 +182,9 @@ function App() {
                       </button>
                     )}
                     {/* Botão para abrir o formulário */}
-                    {selectedSlotId === slot.id ? (
-                      <form onSubmit={handleReserve} className="mt-4 bg-gray-50 p-4 rounded-md border">
-                        <input
-                          type="text"
-                          required
-                          placeholder="Seu Nome"
-                          className="w-full mb-2 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          value={clientName}
-                          onChange={(e) => setClientName(e.target.value)}
-                        />
-                        <input
-                          type="email"
-                          required
-                          placeholder="Seu E-mail"
-                          className="w-full mb-3 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          value={clientEmail}
-                          onChange={(e) => setClientEmail(e.target.value)}
-                        />
-                        <div className="flex gap-2">
-                          <button type="submit" className="flex-1 bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700">
-                            Confirmar
-                          </button>
-                          <button type="button" onClick={() => setSelectedSlotId(null)} className="flex-1 bg-gray-300 text-gray-700 py-2 rounded font-semibold hover:bg-gray-400">
-                            Cancelar
-                          </button>
-                        </div>
-                      </form>
-                    ) : (
-                      <button 
-                        onClick={() => setSelectedSlotId(slot.id)}
-                        className="w-full bg-gray-800 text-white py-2 rounded font-semibold hover:bg-black transition-colors"
-                      >
-                        Reservar este horário
-                      </button>
-                    )}
+                    
+                      
+                    
                   </div>
                 ))}
               </div>
