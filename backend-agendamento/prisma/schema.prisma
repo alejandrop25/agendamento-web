@@ -33,3 +33,9 @@ model Appointment {
   
   slot        Slot     @relation(fields: [slotId], references: [id])
 }
+
+model User {
+  id String @id @default(uuid())
+  username String @unique
+  password String
+}
