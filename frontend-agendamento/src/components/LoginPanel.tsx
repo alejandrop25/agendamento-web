@@ -1,16 +1,16 @@
 import { useState } from 'react';
 
-export const LoginPanel: React.FC = () => {
+interface LoginPanelProps {
+    setToken: (token: string) => void;
+}
+
+export const LoginPanel: React.FC<LoginPanelProps> = ({setToken}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
 
-    const handleLogout = () => {
-      localStorage.removeItem('token');
-      setToken(null);
-    };
+    
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault(); 
@@ -18,7 +18,7 @@ export const LoginPanel: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3333/login', {
+            const response = await fetch('http://localhost:3000/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
@@ -89,6 +89,9 @@ export const LoginPanel: React.FC = () => {
                         {isLoading ? 'Carregando' : 'Entrar'}
                     </button>
                 </form>
+                
+            </div>
+            <div>
                 
             </div>
         </div>

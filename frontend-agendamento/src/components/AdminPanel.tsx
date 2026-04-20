@@ -5,9 +5,10 @@ interface AdminPanelProps {
   artists: Artist[];
   refreshData: () => void;
   setMessage: (msg: { text: string; type: 'success' | 'error' } | null) => void;
+  token: string;
 }
 
-export function AdminPanel({ artists, refreshData, setMessage }: AdminPanelProps) {
+export function AdminPanel({ artists, refreshData, setMessage, token }: AdminPanelProps) {
   const [showArtistForm, setShowArtistForm] = useState(false);
   const [showSlotForm, setShowSlotForm] = useState(false);
   
@@ -23,10 +24,13 @@ export function AdminPanel({ artists, refreshData, setMessage }: AdminPanelProps
     e.preventDefault();
     try {
       const response = await fetch('http://localhost:3000/artists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newArtistName, specialty: newArtistSpecialty }),
-      });
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}` // <--- O CRACHÁ ENTRA AQUI
+  },
+  body: JSON.stringify({ name: newArtistName, specialty: newArtistSpecialty }),
+});
       if (response.ok) {
         setMessage({ text: 'Artista adicionado com sucesso!', type: 'success' });
         refreshData();
@@ -45,11 +49,14 @@ export function AdminPanel({ artists, refreshData, setMessage }: AdminPanelProps
     const endTime = new Date(`${newSlotDate}T${newSlotEnd}`).toISOString();
 
     try {
-      const response = await fetch('http://localhost:3000/slots', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ artistId: newSlotArtistId, startTime, endTime }),
-      });
+      const response = await fetch('http://localhost:3000/artists', {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}` 
+  },
+  body: JSON.stringify({ artistId: newSlotArtistId, startTime, endTime }),
+});
       if (response.ok) {
         setMessage({ text: 'Horário adicionado com sucesso!', type: 'success' });
         refreshData();

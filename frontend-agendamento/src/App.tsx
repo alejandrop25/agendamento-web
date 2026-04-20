@@ -9,10 +9,17 @@ function App() {
   const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+
 
   useEffect(() => {
     refreshAllData();
   }, []);
+
+  const handleLogout = () => {
+      localStorage.removeItem('token');
+      setToken(null);
+  };
 
   const refreshAllData = async () => {
     try {
@@ -37,14 +44,33 @@ function App() {
     <div className="min-h-screen bg-gray-100 p-8 font-sans">
       <div className="max-w-4xl mx-auto">
         
-        {/* Passamos as Props (informações e funções) para o Painel */}
-        <AdminPanel 
-          artists={artists} 
-          refreshData={refreshAllData} 
-          setMessage={setMessage} 
-        />
-
-        <LoginPanel />
+{token ? (
+  <div className="mb-8">
+    <div className="flex justify-end mb-2">
+      <button 
+        onClick={() => {
+          localStorage.removeItem('token');
+          setToken(null);
+        }} 
+        className="text-red-600 font-bold hover:underline"
+      >
+        Sair do Sistema
+      </button>
+    </div>
+    
+    <AdminPanel 
+      artists={artists} 
+      refreshData={refreshAllData} 
+      setMessage={setMessage} 
+      token={token} 
+    />
+  </div>
+) : (
+  /* Se NÃO TEM o token, mostra a tela de Login para proteger a Área VIP */
+  <div className="mb-8">
+    <LoginPanel setToken={setToken} />
+  </div>
+)}
 
         <div className="bg-white rounded-xl shadow-lg p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Agenda Disponível</h1>
@@ -59,7 +85,6 @@ function App() {
             <p className="text-center text-gray-500">Carregando horários disponíveis...</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Desenhamos um componente SlotCard para cada horário encontrado */}
               {slots.map((slot) => (
                 <SlotCard 
                   key={slot.id} 
