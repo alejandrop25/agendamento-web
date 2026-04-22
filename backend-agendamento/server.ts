@@ -11,7 +11,6 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-// TypeScript exige que tenhamos certeza de que a variável de ambiente existe
 const JWT_SECRET = process.env.JWT_SECRET as string;
 if (!JWT_SECRET) {
     throw new Error("A variável JWT_SECRET não está definida no arquivo .env");
@@ -21,13 +20,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Adicionamos os tipos Request, Response e NextFunction do Express
 const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
   
   if (!authHeader) {
     res.status(401).json({ error: 'Token não fornecido' });
-    return; // Usamos return vazio para o TS entender que a função para aqui
+    return; 
   }
 
   const token = authHeader.split(' ')[1] as string; 
@@ -61,7 +59,6 @@ app.post('/reserve', async (req: Request, res: Response) => {
                 where: { id: slotId },
             });
             
-            // Ajustei o texto do erro para bater com o seu tratamento de erros no catch
             if (!slot) {
                 throw new Error('SLOT_NOT_FOUND'); 
             }
@@ -90,7 +87,7 @@ app.post('/reserve', async (req: Request, res: Response) => {
             message: 'Reserva confirmada!',
             appointment: result
         });
-    } catch (error: any) { // "any" é usado para podermos ler a propriedade error.message
+    } catch (error: any) { 
         if (error.message === 'ALREADY_BOOKED' || error.code === 'P2002') {
             res.status(409).json({ error: 'Desculpe, este horário acabou de ser reservado por outra pessoa.' });
         } else if (error.message === 'SLOT_NOT_FOUND') {
@@ -157,7 +154,6 @@ app.post('/slots', authMiddleware, async (req: Request, res: Response) => {
             },
             include: { artist: true }
         });
-        // IMPORTANTE: Adicionado o retorno do json, senão a requisição fica travada!
         res.status(201).json(slot); 
     } catch (error) {
         res.status(500).json({ error: 'Erro ao criar horário' });
@@ -176,7 +172,6 @@ app.post('/setup', async (req: Request, res: Response) => {
     }
 });
 
-// A rota de login foi movida para cima do app.listen!
 app.post('/login', async (req: Request, res: Response): Promise<void> => {
     const { username, password } = req.body;
 

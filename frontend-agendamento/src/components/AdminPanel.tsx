@@ -27,7 +27,7 @@ export function AdminPanel({ artists, refreshData, setMessage, token }: AdminPan
   method: 'POST',
   headers: { 
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}` // <--- O CRACHÁ ENTRA AQUI
+    'Authorization': `Bearer ${token}` 
   },
   body: JSON.stringify({ name: newArtistName, specialty: newArtistSpecialty }),
 });

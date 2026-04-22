@@ -31,8 +31,19 @@ function App() {
       const slotsData = await slotsRes.json();
       const artistsData = await artistsRes.json();
       
-      setSlots(slotsData);
-      setArtists(artistsData);
+      // ESCUDO: Só salva se for realmente uma lista (Array)
+      if (Array.isArray(slotsData)) {
+        setSlots(slotsData);
+      } else {
+        console.error("Erro: Esperava uma lista de horários, mas recebi:", slotsData);
+      }
+
+      if (Array.isArray(artistsData)) {
+        setArtists(artistsData);
+      } else {
+        console.error("Erro: Esperava uma lista de artistas, mas recebi:", artistsData);
+      }
+
     } catch (error) {
       setMessage({ text: 'Erro ao carregar os dados do servidor.', type: 'error' });
     } finally {

@@ -10,7 +10,7 @@ model Artist {
   id        String   @id @default(uuid())
   name      String
   specialty String
-  slots     Slot[]   // Relação: Um artista tem vários horários
+  slots     Slot[]   
 }
 
 model Slot {
@@ -21,12 +21,12 @@ model Slot {
   isBooked    Boolean      @default(false)
   
   artist      Artist       @relation(fields: [artistId], references: [id])
-  appointment Appointment? // Relação: Um horário pode ter UM agendamento (opcional)
+  appointment Appointment? 
 }
 
 model Appointment {
   id          String   @id @default(uuid())
-  slotId      String   @unique // O SEGREDO: Garante que 1 horário = 1 agendamento
+  slotId      String   @unique 
   clientName  String
   clientEmail String
   status      String   @default("confirmed")
