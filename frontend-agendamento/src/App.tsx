@@ -31,7 +31,6 @@ function App() {
       const slotsData = await slotsRes.json();
       const artistsData = await artistsRes.json();
       
-      // ESCUDO: Só salva se for realmente uma lista (Array)
       if (Array.isArray(slotsData)) {
         setSlots(slotsData);
       } else {
@@ -77,7 +76,6 @@ function App() {
     />
   </div>
 ) : (
-  /* Se NÃO TEM o token, mostra a tela de Login para proteger a Área VIP */
   <div className="mb-8">
     <LoginPanel setToken={setToken} />
   </div>
